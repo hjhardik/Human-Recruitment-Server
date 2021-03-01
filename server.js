@@ -391,7 +391,10 @@ app.post('/signauth/redirect', async (req,res) => {
     let url = `https://secure.na1.adobesign.com/public/oauth?redirect_uri=${redirectUrl}&
     response_type=code&client_id=${clientID}&scope=user_login:self+agreement_read:self+
     agreement_write:self+agreement_send:self&state=S6YQD7KDA556DIV6NA`;
-    res.json({url:url});
+    res.json({
+      success: true,
+      data: url,
+    });
   }
 })
 
