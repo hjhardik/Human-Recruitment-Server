@@ -327,6 +327,7 @@ app.post('/signauth/redirect', async (req,res) => {
   let access_token = fetchedData.access_token
   let refresh_token = fetchedData.refresh_token
 
+  console.log("ACCESS TOKEN:", access_token);
   if(access_token == undefined || access_token==null){
     res.json({
       success: false,
@@ -390,7 +391,7 @@ app.post('/signauth/redirect', async (req,res) => {
     let url = `https://secure.na1.adobesign.com/public/oauth?redirect_uri=${redirectUrl}&
     response_type=code&client_id=${clientID}&scope=user_login:self+agreement_read:self+
     agreement_write:self+agreement_send:self&state=S6YQD7KDA556DIV6NA`;
-    res.send(url);
+    res.json({url:url});
   }
 })
 
