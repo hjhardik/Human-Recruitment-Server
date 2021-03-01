@@ -465,7 +465,7 @@ app.post("/copycontract/annotations/find", async (req, res) => {
     res.send(null);
   } else {
     //finds all annotations with same fileId
-    await Annotation.find({ fileId: reqFile })
+    Annotation.find({ fileId: reqFile })
       .select({ _id: 0, data: 1 })
       .exec((err, annos) => {
         if (!err) {
@@ -486,20 +486,18 @@ app.post("/copycontract/annotations/add", async (req, res) => {
     res.send(null);
   } else {
     let id = data.id;
-    await Annotation.findOne({ id: id, fileId: fileName }).then((anno) => {
+    Annotation.findOne({ id: id, fileId: fileName }).then((anno) => {
       //checks if already not present, then creates one
       if (!anno) {
-        let ano = await new Annotation({
+        let ano = new Annotation({
           id: id,
           fileId: fileName,
           data: data,
         });
-        await ano.save();
+        ano.save();
       }
     });
-    res.json({
-      success: true
-    });
+    res.send('success');
   }
 });
 //update annos route
