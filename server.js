@@ -17,19 +17,11 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
-
   // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', '*');
-
-  // Request methods you wish to allow
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-  // Request headers you wish to allow
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-  // Pass to next layer of middleware
+  res.setHeader('Access-Control-Allow-Origin', "*");
   next();
 });
+app.use(cors());
 
 //DB Config
 const db = require("./config/keys").mongoURI;
@@ -316,7 +308,7 @@ app.post('/modifystatus', async(req,res) => {
 });
 
 app.post('/signauth/redirect', async (req,res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+
   let {contract, candidate, email, code, api_access_point, web_access_point } = req.body; 
   
   if(code!==undefined && api_access_point!==undefined && web_access_point!==undefined){  
@@ -469,7 +461,6 @@ app.get('/viewpdf/:pdfLocation', (req,res)=>{
 
 //find annotations for a given file though fileId
 app.post("/copycontract/annotations/find", async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
   let reqFile = req.body.fileId;
   if (reqFile == "" || reFile === undefined) {
     res.sendStatus(200);
@@ -488,7 +479,6 @@ app.post("/copycontract/annotations/find", async (req, res) => {
 });
 //add annos route
 app.post("/copycontract/annotations/add", async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
   let data = req.body.data;
   let fileName = req.body.fileId;
   if (data == "" || fileName == "" || data == undefined) {
@@ -511,7 +501,6 @@ app.post("/copycontract/annotations/add", async (req, res) => {
 });
 //update annos route
 app.post("/copycontract/annotations/update", (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
   let data = req.body.data;
   let fileName = req.body.fileId;
   let id = data.id;
@@ -530,7 +519,6 @@ app.post("/copycontract/annotations/update", (req, res) => {
 
 //delete annos route
 app.post("/copycontract/annotations/delete", async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
   let data = req.body.data;
   let fileName = req.body.fileId;
   let id = data.id;
