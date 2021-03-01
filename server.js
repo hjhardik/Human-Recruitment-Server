@@ -36,6 +36,7 @@ mongoose
 const User = require("./models/User");
 const Contract = require("./models/Contract");
 const CopyContract = require("./models/CopyContract");
+const Annotation = require("./models/Annotation");
 
 //findUser
 const findUser = async (userName, password, candidate) => {
