@@ -307,9 +307,11 @@ app.post('/modifystatus', async(req,res) => {
 
 app.post('/signauth/redirect', async (req,res) => {
 
-  let {contract, candidate, email, code, api_access_point, web_access_point } = req.body; 
+  let {contractF, candidateF, email, code, state } = req.body; 
   
-  if(code!==undefined && api_access_point!==undefined && web_access_point!==undefined){  
+  if(code !== null && code !== undefined){  
+    let contract = state.split("__")[0];
+    let candidate = state.split("__")[1]
   //NOW SEND POST REQ TO TOKEN ENDPOINT
   let fetchedData = await fetch('https://api.na1.adobesign.com/oauth/token/' + new URLSearchParams({
     code : code,
@@ -387,7 +389,7 @@ app.post('/signauth/redirect', async (req,res) => {
     })
   })
   }else{
-    let url = `https://secure.na1.adobesign.com/public/oauth?redirect_uri=${redirectUrl}&response_type=code&client_id=${clientID}&scope=user_login:self+agreement_read:self+agreement_write:self+agreement_send:self&state=S6YQD7KDA556DIV6NA`;
+    let url = `https://secure.na1.adobesign.com/public/oauth?redirect_uri=${redirectUrl}&response_type=code&client_id=${clientID}&scope=user_login:self+agreement_read:self+agreement_write:self+agreement_send:self&state=${contractF}__${candidateF}`;
     res.json({
       success: true,
       data: url,
