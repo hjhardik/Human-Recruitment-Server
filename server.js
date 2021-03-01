@@ -335,7 +335,6 @@ app.post('/signauth/redirect', async (req,res) => {
 
   let fetchedData = await axios(config)
     .then(function (response) {
-      console.log("fetched data successful: ", JSON.stringify(response.data));
       return (JSON.stringify(response.data));
     })
     .catch(function (error) {
@@ -344,7 +343,9 @@ app.post('/signauth/redirect', async (req,res) => {
         msg: error
       })
     });
- 
+    
+  console.log(response.data)
+  console.log(typeof(response.data))  
   let access_token = fetchedData.access_token
   let refresh_token = fetchedData.refresh_token
 
