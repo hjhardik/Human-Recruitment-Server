@@ -371,9 +371,10 @@ app.post('/signauth/redirect', async (req,res) => {
 
   axios(config)
   .then(function (response) {
-    console.log(JSON.stringify(response.data));
     
     let transientDocumentId = response.data.transientDocumentId;
+    console.log("td : ", transientDocumentId);
+
     var newData = JSON.stringify({"fileInfos":[{"transientDocumentId":`${transientDocumentId}`}],"name":`${contract}`,"participantSetsInfo":[{"memberInfos":[{"email":`${email}`}],"order":1,"role":"SIGNER"}],"signatureType":"ESIGN","state":"IN_PROCESS"});
 
     var newConfig = {
