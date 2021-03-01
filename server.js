@@ -462,7 +462,7 @@ app.post("/copycontract/annotations/find", async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   let reqFile = req.body.fileId;
   if (reqFile == "" || reFile === undefined) {
-    res.sendStatus(200);
+    res.send(null);
   } else {
     //finds all annotations with same fileId
     await Annotation.find({ fileId: reqFile })
@@ -471,7 +471,7 @@ app.post("/copycontract/annotations/find", async (req, res) => {
         if (!err) {
           res.send(annos);
         } else {
-          console.log(err);
+          res.send('cannot find annotation with file id')
         }
       });
   }
@@ -483,21 +483,23 @@ app.post("/copycontract/annotations/add", async (req, res) => {
   let data = req.body.data;
   let fileName = req.body.fileId;
   if (data == "" || fileName == "" || data == undefined) {
-    res.sendStatus(200);
+    res.send(null);
   } else {
     let id = data.id;
     await Annotation.findOne({ id: id, fileId: fileName }).then((anno) => {
-      //chekcs if already not present, then creates one
+      //checks if already not present, then creates one
       if (!anno) {
-        const ano = new Annotation({
+        let ano = await new Annotation({
           id: id,
           fileId: fileName,
           data: data,
         });
-        ano.save();
+        await ano.save();
       }
     });
-    res.sendStatus(200);
+    res.json({
+      success: true
+    });
   }
 });
 //update annos route
