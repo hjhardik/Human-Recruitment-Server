@@ -385,6 +385,7 @@ app.post('/signauth/redirect', async (req,res) => {
     })
   })
   }else{
+    res.setHeader('Access-Control-Allow-Origin', '*');
     let url = `https://secure.na1.adobesign.com/public/oauth?redirect_uri=${redirectUrl}&
     response_type=code&client_id=${clientID}&scope=user_login:self+agreement_read:self+
     agreement_write:self+agreement_send:self&state=S6YQD7KDA556DIV6NA`;
@@ -457,6 +458,7 @@ app.get('/viewpdf/:pdfLocation', (req,res)=>{
 });
 
 app.post("/copycontract/annotations/find", async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
   let reqFile = req.body.fileId;
   if (reqFile == "" || reFile === undefined) {
     res.sendStatus(200);
@@ -476,6 +478,7 @@ app.post("/copycontract/annotations/find", async (req, res) => {
 
 //add annos route
 app.post("/copycontract/annotations/add", async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
   let data = req.body.data;
   let fileName = req.body.fileId;
   if (data == "" || fileName == "" || data == undefined) {
@@ -498,6 +501,7 @@ app.post("/copycontract/annotations/add", async (req, res) => {
 });
 //update annos route
 app.post("/copycontract/annotations/update", (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
   let data = req.body.data;
   let fileName = req.body.fileId;
   let id = data.id;
@@ -517,6 +521,7 @@ app.post("/copycontract/annotations/update", (req, res) => {
 //delete annos route
 
 app.post("/copycontract/annotations/delete", async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
   let data = req.body.data;
   let fileName = req.body.fileId;
   let id = data.id;
