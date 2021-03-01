@@ -6,6 +6,7 @@ const axios = require('axios');
 const FormData = require('form-data');
 const fs = require('fs');
 const fetch = require('node-fetch');
+var qs = require('qs');
 
 const createPdf = require('./createPdfFromDynamic');
 const reorderPage = require('./reorderPage.js');
@@ -315,24 +316,35 @@ app.post('/signauth/redirect', async (req,res) => {
     let contract = state.split("__")[0];
     let candidate = state.split("__")[1]
   //NOW SEND POST REQ TO TOKEN ENDPOINT
-  let fetchedData = await fetch('https://api.na1.adobesign.com/oauth/token' + new URLSearchParams({
-    code : code,
-    client_id : clientID,
-    client_secret : clientSecret,
-    redirect_uri : redirectUrl,
-    grant_type : 'authorization_code',
-  }),{
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+  
+  var data = qs.stringify({
+    'code': code,
+    'client_id': clientID,
+    'client_secret': clientSecret,
+    'redirect_uri': redirectUrl,
+    'grant_type': 'authorization_code', 
+  });
+  var config = {
+    method: 'post',
+    url: 'https://api.na1.adobesign.com/oauth/token',
+    headers: { 
+      'Content-Type': 'application/x-www-form-urlencoded'
     },
-  }).then(data => data.json())
-  .catch(e => {
-    res.json({
-      success: false,
-      msg: 'could not generate access token.'
+    data : data
+  };
+
+  let fetchedData = await axios(config)
+    .then(function (response) {
+      console.log("fetched data successful: ", JSON.stringify(response.data));
+      return (JSON.stringify(response.data));
     })
-  })
+    .catch(function (error) {
+      res.json({
+        success: false,
+        msg: error
+      })
+    });
+ 
   let access_token = fetchedData.access_token
   let refresh_token = fetchedData.refresh_token
 
@@ -340,7 +352,7 @@ app.post('/signauth/redirect', async (req,res) => {
   if(access_token == undefined || access_token==null){
     res.json({
       success: false,
-      msg: 'could not generate access token.'
+      msg: 'Could not generate access token.'
     })
   }
 
