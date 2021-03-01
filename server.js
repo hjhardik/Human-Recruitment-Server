@@ -406,6 +406,17 @@ app.post('/signauth/redirect', async (req,res) => {
         success:true,
         msg:"UPDATED AGREEMENT ID"
       });
+    }).catch(e => {
+      res.json({
+        success: false,
+        msg: e
+      })
+    })
+  })
+  .catch(e => {
+    res.json({
+      success: false,
+      msg: e
     })
   })
   }else{
