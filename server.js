@@ -344,8 +344,8 @@ app.post('/signauth/redirect', async (req,res) => {
       })
     });
     
-  console.log(response.data)
-  console.log(typeof(response.data))  
+  console.log(fetchedData)
+  console.log(typeof(fetchedData))  
   let access_token = fetchedData.access_token
   let refresh_token = fetchedData.refresh_token
 
