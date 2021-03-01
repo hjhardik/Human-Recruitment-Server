@@ -315,7 +315,7 @@ app.post('/signauth/redirect', async (req,res) => {
     let contract = state.split("__")[0];
     let candidate = state.split("__")[1]
   //NOW SEND POST REQ TO TOKEN ENDPOINT
-  let fetchedData = await fetch('https://api.na1.adobesign.com/oauth/token/' + new URLSearchParams({
+  let fetchedData = await fetch('https://api.na1.adobesign.com/oauth/token' + new URLSearchParams({
     code : code,
     client_id : clientID,
     client_secret : clientSecret,
@@ -327,7 +327,12 @@ app.post('/signauth/redirect', async (req,res) => {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   }).then(data => data.json())
-  
+  .catch(e => {
+    res.json({
+      success: false,
+      msg: 'could not generate access token.'
+    })
+  })
   let access_token = fetchedData.access_token
   let refresh_token = fetchedData.refresh_token
 
