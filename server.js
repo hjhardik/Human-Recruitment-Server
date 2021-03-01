@@ -307,8 +307,10 @@ app.post('/modifystatus', async(req,res) => {
 
 app.post('/signauth/redirect', async (req,res) => {
 
-  let {contractF, candidateF, email, code, state } = req.body; 
-  
+  let {contract, candidate, email, code, state } = req.body; 
+  let contractF = contract;
+  let candidateF = candidate;
+
   if(code !== null && code !== undefined){  
     let contract = state.split("__")[0];
     let candidate = state.split("__")[1]
