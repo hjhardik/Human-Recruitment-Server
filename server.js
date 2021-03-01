@@ -461,7 +461,7 @@ app.get('/viewpdf/:pdfLocation', (req,res)=>{
 app.post("/copycontract/annotations/find", async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   let reqFile = req.body.fileId;
-  if (reqFile == "" || reFile === undefined) {
+  if (reqFile == "" || reqFile === undefined) {
     res.send(null);
   } else {
     //finds all annotations with same fileId
