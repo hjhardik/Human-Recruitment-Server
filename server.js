@@ -16,11 +16,6 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(function (req, res, next) {
-  // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', "*");
-  next();
-});
 app.use(cors());
 
 //DB Config
@@ -460,6 +455,12 @@ app.get('/viewpdf/:pdfLocation', (req,res)=>{
 });
 
 //find annotations for a given file though fileId
+app.options('/copycontract/annotations/find', function (req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader('Access-Control-Allow-Methods', '*');
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.end();
+});
 app.post("/copycontract/annotations/find", async (req, res) => {
   let reqFile = req.body.fileId;
   if (reqFile == "" || reFile === undefined) {
@@ -476,6 +477,13 @@ app.post("/copycontract/annotations/find", async (req, res) => {
         }
       });
   }
+});
+
+app.options('/copycontract/annotations/add', function (req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader('Access-Control-Allow-Methods', '*');
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.end();
 });
 //add annos route
 app.post("/copycontract/annotations/add", async (req, res) => {
@@ -500,6 +508,12 @@ app.post("/copycontract/annotations/add", async (req, res) => {
   }
 });
 //update annos route
+app.options('/copycontract/annotations/update', function (req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader('Access-Control-Allow-Methods', '*');
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.end();
+});
 app.post("/copycontract/annotations/update", (req, res) => {
   let data = req.body.data;
   let fileName = req.body.fileId;
@@ -518,6 +532,12 @@ app.post("/copycontract/annotations/update", (req, res) => {
 });
 
 //delete annos route
+app.options('/copycontract/annotations/delete', function (req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader('Access-Control-Allow-Methods', '*');
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.end();
+});
 app.post("/copycontract/annotations/delete", async (req, res) => {
   let data = req.body.data;
   let fileName = req.body.fileId;
