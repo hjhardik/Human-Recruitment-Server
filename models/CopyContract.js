@@ -23,7 +23,7 @@ const copyContractSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // 0:DRAFT, 1:FINALIZED, 2:APPROVBYCAND, 3:APPROVBYCOMP, 4:APPROVED, 5:SIGNED
+  // 0:DRAFT, 1:FINALIZED, 2:APPROVBYCAND, 3:APPROVBYCOMP, 4:APPROVED, 5:SIGNED BY COMPANY, 6.SIGNED
   status:{
     type: Number,
     default: 0,

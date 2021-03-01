@@ -1,3 +1,4 @@
+//import all required modules
 const express = require("express");
 const bodyParser = require("body-parser"); //body-parser
 const mongoose = require("mongoose"); //for mongodb database
@@ -7,11 +8,6 @@ const FormData = require('form-data');
 const fs = require('fs');
 const fetch = require('node-fetch');
 var qs = require('qs');
-
-const createPdf = require('./createPdfFromDynamic');
-const reorderPage = require('./reorderPage.js');
-const deletePage = require('./deletePage.js');
-
 
 const app = express();
 
@@ -38,6 +34,17 @@ const User = require("./models/User");
 const Contract = require("./models/Contract");
 const CopyContract = require("./models/CopyContract");
 const Annotation = require("./models/Annotation");
+
+//require editing functions
+const createPdf = require('./createPdfFromDynamic');
+const reorderPage = require('./reorderPage.js');
+const deletePage = require('./deletePage.js');
+
+//require all editing functions
+const clientID = require('./config/signApi').clientID
+const clientSecret = require('./config/signApi').clientSecret
+const redirectUrl = require('./config/signApi').redirectURL
+
 
 //findUser
 const findUser = async (userName, password, candidate) => {
@@ -143,7 +150,7 @@ const registerCopyContract = async (user, company, member, contractName, draftCo
 
 
 // Routes
-//DONE
+//login
 app.post('/login', async (req,res)=>{
   let {userName, password, candidate} = req.body;
   console.log("this is req ",userName.trim(),password, candidate);
@@ -166,7 +173,7 @@ app.post('/login', async (req,res)=>{
   }  
 })
 
-//DONE
+//register
 app.post('/register', async (req,res)=>{
   let {userName, fullName, password, companyName, candidate} = req.body;
   let user = await registerUser(userName.trim(), fullName.trim(), password, companyName.trim(), candidate)
@@ -188,7 +195,7 @@ app.post('/register', async (req,res)=>{
   }
 });
 
-//DONE
+//contracts
 app.post('/contracts', async (req,res) => {
   let {user, company, candidate} = req.body;
   let contracts = []
@@ -198,6 +205,7 @@ app.post('/contracts', async (req,res) => {
   )  
 });
 
+//edit contracts
 app.post('/editcontract', async(req,res) => {
   let {creator, candidate, company, contract, draftContent} = req.body;
   let pdfStatus = await createPdf(creator, company, candidate, contract, draftContent, `${contract}_${candidate}`);  
@@ -225,6 +233,8 @@ app.post('/editcontract', async(req,res) => {
     })
   } 
 });
+
+//reorder 
 app.post('/editcontract/reorderDelete', async(req,res) => {
   let {candidate,contract, SP, EP, id} = req.body;
   if(id===0){
@@ -256,7 +266,7 @@ app.post('/editcontract/reorderDelete', async(req,res) => {
   }
 });
 
-
+//find draft content
 app.post('/finddraftcontent', async(req,res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   let {candidate, contract} = req.body;
@@ -265,11 +275,7 @@ app.post('/finddraftcontent', async(req,res) => {
   else res.json({success: false, content: null})
 });
 
-const clientID = require('./config/signApi').clientID
-const clientSecret = require('./config/signApi').clientSecret
-const redirectUrl = require('./config/signApi').redirectURL
-
-
+//modify status of contract
 app.post('/modifystatus', async(req,res) => {
   let {creator, candidate, contract, status} = req.body;
   //status=10 denotes delete operation
@@ -306,6 +312,7 @@ app.post('/modifystatus', async(req,res) => {
   }
 });
 
+//sign api redirection
 app.post('/signauth/redirect', async (req,res) => {
 
   let {contract, candidate, email, code, state } = req.body; 
@@ -411,7 +418,7 @@ app.post('/signauth/redirect', async (req,res) => {
   .catch(e=>{
     res.json({
       success: false,
-      msg: "cannot create agreement"
+      msg: "Cannot create agreement because API is not certified by Adobe. Place a request for certification and then it will work."
     })
   })
   }else{
@@ -423,7 +430,7 @@ app.post('/signauth/redirect', async (req,res) => {
   }
 })
 
-//DONE
+//find all the company members
 app.post('/findCompanyMembers', async (req,res) => {
   let company = req.body.company;
   let candidates = await findCompanyMembers(company)
@@ -436,7 +443,7 @@ app.post('/findCompanyMembers', async (req,res) => {
   )
 })
 
-//DONE
+//create draft route
 app.post('/createDraft', async (req,  res) => {
   let {user, company, contractName, selectedMembers, draftContent} = req.body;
   let createdContracts = [];
@@ -487,6 +494,7 @@ app.get('/viewpdf/:pdfLocation', (req,res)=>{
   })
 });
 
+//find annotations present in the contract
 app.post("/copycontract/annotations/find", async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   let reqFile = req.body.fileId;
@@ -506,7 +514,7 @@ app.post("/copycontract/annotations/find", async (req, res) => {
   }
 });
 
-//add annos route
+//add annotations route
 app.post("/copycontract/annotations/add", async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   let data = req.body.data;
@@ -529,7 +537,7 @@ app.post("/copycontract/annotations/add", async (req, res) => {
     res.send('success');
   }
 });
-//update annos route
+//update annotations route
 app.post("/copycontract/annotations/update", (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   let data = req.body.data;
@@ -548,8 +556,7 @@ app.post("/copycontract/annotations/update", (req, res) => {
   res.sendStatus(200);
 });
 
-//delete annos route
-
+//delete annonations route
 app.post("/copycontract/annotations/delete", async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   let data = req.body.data;
