@@ -406,98 +406,15 @@ app.post('/signauth/redirect', async (req,res) => {
         success:true,
         msg:"UPDATED AGREEMENT ID"
       });
-    }).catch(e => {
-      res.json({
-        success: false,
-        msg: e
-      })
     })
   })
-  .catch(e => {
-    var data = qs.stringify({
-      'refresh_token': refresh_token,
-      'client_id': clientID,
-      'client_secret': clientSecret,
-      'grant_type': 'refresh_token', 
-    });
-    var config = {
-      method: 'post',
-      url: 'https://api.na1.adobesign.com/oauth/refresh',
-      headers: { 
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      data : data
-    };
-  
-    let fetchedData = await axios(config)
-      .then(function (response) {
-        return (JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        res.json({
-          success: false,
-          msg: error
-        })
-      });
-      let access_token = JSON.parse(fetchedData).access_token;
-      var data = new FormData();
-  data.append('file', fs.createReadStream(`./output/${contract}_${candidate}.pdf`));
-
-  var config = {
-    method: 'post',
-    url: 'https://api.na1.adobesign.com/api/rest/v6/transientDocuments',
-    headers: { 
-      'Authorization': `Bearer ${access_token}`, 
-      ...data.getHeaders()
-    },
-    data : data
-  };
-
-  axios(config)
-  .then(function (response) {
-    
-    let transientDocumentId = response.data.transientDocumentId;
-    console.log("td : ", transientDocumentId);
-
-    var newData = JSON.stringify({"fileInfos":[{"transientDocumentId":`${transientDocumentId}`}],"name":`${contract}`,"participantSetsInfo":[{"memberInfos":[{"email":`${email}`}],"order":1,"role":"SIGNER"}],"signatureType":"ESIGN","state":"IN_PROCESS"});
-
-    var newConfig = {
-      method: 'post',
-      url: 'https://api.na1.adobesign.com/api/rest/v6/agreements',
-      headers: { 
-        'Content-Type': 'application/json', 
-        'Authorization': `Bearer ${access_token}`
-      },
-      data : newData
-    };
-
-    axios(newConfig)
-    .then(async function (response) {
-      let agreementId = response.data.id
-      await CopyContract.findOneAndUpdate(
-        { candidateName: candidate, contractName: contract },
-        { "$set": { "agreementId": agreementId,}},
-        (err) => {
-          if (err) {
-            res.json({
-              success: false,
-              msg:"Cannot update agreement Id.",
-            })
-          }
-        }
-      );
-      res.json({
-        success:true,
-        msg:"UPDATED AGREEMENT ID"
-      });
-    }).catch(e => {
-      res.json({
-        success: false,
-        msg: e
-      })
+  .catch(e=>{
+    res.json({
+      success: false,
+      msg: "cannot create agreement"
     })
   })
-  })}else{
+  }else{
     let url = `https://secure.na1.adobesign.com/public/oauth?redirect_uri=${redirectUrl}&response_type=code&client_id=${clientID}&scope=user_login:self+agreement_read:self+agreement_write:self+agreement_send:self&state=${contractF}__${candidateF}`;
     res.json({
       success: true,
