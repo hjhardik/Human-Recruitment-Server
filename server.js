@@ -64,7 +64,6 @@ const findUser = async (userName, password, candidate) => {
 const registerUser = async (userName, fullName, password, company, candidate) => {
   let alreadyUser = await User.findOne({ userName, company, candidate })
   if(alreadyUser){
-      console.log("Username with same name already exists for this company")
       return null
     }else{
       const newUser = await new User({
@@ -122,7 +121,6 @@ const findContracts = async(userName, company, candidate) => {
 const registerContract = async (userName, company, contractName, selectedMembers) => {
   let contract = await Contract.findOne({contractName, creator:userName, company})
   if(contract){
-    console.log("Contract with same name is already present for this company created by you")
     return null
   }else{
     let newContract = await new Contract({
@@ -153,7 +151,6 @@ const registerCopyContract = async (user, company, member, contractName, draftCo
 //login
 app.post('/login', async (req,res)=>{
   let {userName, password, candidate} = req.body;
-  console.log("this is req ",userName.trim(),password, candidate);
   let user = await findUser(userName.trim(), password, candidate)
   if(user==null){
     res.json({
@@ -318,7 +315,6 @@ app.post('/signauth/redirect', async (req,res) => {
   let {contract, candidate, email, code, state, api_access_point } = req.body; 
   let contractF = contract;
   let candidateF = candidate;
-  console.log("api_access_point :", api_access_point);
    //NOW SEND POST REQ TO TOKEN ENDPOINT
   if (code !== null && code !== undefined) {  
     let contract = state.split("__")[0];
@@ -444,9 +440,10 @@ app.post('/signauth/redirect', async (req,res) => {
     })
   })
   .catch(e => {
+    console.log(e)
     res.json({
       success: false,
-      msg: "Cannot create agreement because API is not certified by Adobe."
+      msg: "Error occured while creating agreement. Please try again."
     })
   })
   }else{
@@ -577,7 +574,6 @@ app.post("/copycontract/annotations/update", (req, res) => {
     { "data.bodyValue": data.bodyValue },
     (err) => {
       if (err) {
-        console.log(err);
       }
     }
   );
@@ -593,7 +589,6 @@ app.post("/copycontract/annotations/delete", async (req, res) => {
   //finds annos by _id and then deletes it from DB
   await Annotation.deleteOne({ id: id, fileId: fileName }, (err) => {
     if (err) {
-      console.log(err);
     }
   });
   res.sendStatus(200);
