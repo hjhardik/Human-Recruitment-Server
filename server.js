@@ -398,12 +398,13 @@ app.post('/signauth/redirect', async (req,res) => {
       let agreementId = response.data.id
       var cnfg = {
         method: 'get',
-        url: `${api_access_point}api/rest/v6/agreements/${agreementId}/signingUrls`,
+        //url: `${api_access_point}api/rest/v6/agreements/${agreementId}/signingUrls`,
+        url: 'https://api.in1.adobesign.com/api/rest/v6/agreements/CBJCHBCAABAAN2e0K-s5ECjksk2FfqLJQLe3Vgua8_iW/signingUrls',
         headers: { 
           'Authorization': `Bearer ${access_token}`
         }
       };
-      await sleep(3000);
+      console.log("error occurs from below")
       await axios(cnfg)
       .then(async function (response) {
         console.log("XXXXXXXXXXX", response.data);
