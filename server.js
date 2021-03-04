@@ -363,6 +363,7 @@ app.post('/signauth/redirect', async (req,res) => {
     })
   }
 
+  consoel.log(`${api_access_point}api/rest/v6/transientDocuments`);
   var data = new FormData();
   data.append('File', fs.createReadStream(`./output/${contract}_${candidate}.pdf`));
 
@@ -417,6 +418,7 @@ app.post('/signauth/redirect', async (req,res) => {
     })
   })
   .catch(e=>{
+    console.log(e);
     res.json({
       success: false,
       msg: "Cannot create agreement because API is not certified by Adobe. Place a request for certification and then it will work."
