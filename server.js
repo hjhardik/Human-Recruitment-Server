@@ -315,15 +315,15 @@ app.post('/modifystatus', async(req,res) => {
 //sign api redirection
 app.post('/signauth/redirect', async (req,res) => {
 
-  let {contract, candidate, email, code, state } = req.body; 
+  let {contract, candidate, email, code, state, api_access_point } = req.body; 
   let contractF = contract;
   let candidateF = candidate;
 
-  if(code !== null && code !== undefined){  
+   //NOW SEND POST REQ TO TOKEN ENDPOINT
+  if (code !== null && code !== undefined) {  
     let contract = state.split("__")[0];
     let candidate = state.split("__")[1]
-  //NOW SEND POST REQ TO TOKEN ENDPOINT
-  
+ 
   var data = qs.stringify({
     'code': code,
     'client_id': clientID,
@@ -333,7 +333,7 @@ app.post('/signauth/redirect', async (req,res) => {
   });
   var config = {
     method: 'post',
-    url: 'https://api.na1.adobesign.com/oauth/token',
+    url: `${api_access_point}/oauth/token`,
     headers: { 
       'Content-Type': 'application/x-www-form-urlencoded'
     },
@@ -364,11 +364,11 @@ app.post('/signauth/redirect', async (req,res) => {
   }
 
   var data = new FormData();
-  data.append('file', fs.createReadStream(`./output/${contract}_${candidate}.pdf`));
+  data.append('File', fs.createReadStream(`./output/${contract}_${candidate}.pdf`));
 
   var config = {
     method: 'post',
-    url: 'https://api.na1.adobesign.com/api/rest/v6/transientDocuments',
+    url: `${api_access_point}/api/rest/v6/transientDocuments`,
     headers: { 
       'Authorization': `Bearer ${access_token}`, 
       ...data.getHeaders()
@@ -378,7 +378,7 @@ app.post('/signauth/redirect', async (req,res) => {
 
   axios(config)
   .then(function (response) {
-    
+    consoel.log("trabs response : ", response);
     let transientDocumentId = response.data.transientDocumentId;
     console.log("td : ", transientDocumentId);
 
@@ -386,7 +386,7 @@ app.post('/signauth/redirect', async (req,res) => {
 
     var newConfig = {
       method: 'post',
-      url: 'https://api.na1.adobesign.com/api/rest/v6/agreements',
+      url: `${api_access_point}/api/rest/v6/agreements`,
       headers: { 
         'Content-Type': 'application/json', 
         'Authorization': `Bearer ${access_token}`
@@ -396,6 +396,7 @@ app.post('/signauth/redirect', async (req,res) => {
 
     axios(newConfig)
     .then(async function (response) {
+      console.log("agreement response : ", response);
       let agreementId = response.data.id
       await CopyContract.findOneAndUpdate(
         { candidateName: candidate, contractName: contract },
