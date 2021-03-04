@@ -355,7 +355,6 @@ app.post('/signauth/redirect', async (req,res) => {
   let access_token = JSON.parse(fetchedData).access_token
   let refresh_token = JSON.parse(fetchedData).refresh_token
 
-  console.log("ACCESS TOKEN:", access_token);
   if(access_token == undefined || access_token==null){
     res.json({
       success: false,
@@ -363,7 +362,7 @@ app.post('/signauth/redirect', async (req,res) => {
     })
   }
 
-  consoel.log(`${api_access_point}api/rest/v6/transientDocuments`);
+  console.log(`${api_access_point}api/rest/v6/transientDocuments`);
   var data = new FormData();
   data.append('File', fs.createReadStream(`./output/${contract}_${candidate}.pdf`));
 
