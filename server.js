@@ -393,7 +393,6 @@ app.post('/signauth/redirect', async (req,res) => {
       },
       data : newData
     };
-
     axios(newConfig)
     .then(async function (response) {
       let agreementId = response.data.id
@@ -404,7 +403,8 @@ app.post('/signauth/redirect', async (req,res) => {
           'Authorization': `Bearer ${access_token}`
         }
       };
-      axios(cnfg)
+      await sleep(3000);
+      await axios(cnfg)
       .then(async function (response) {
         console.log("XXXXXXXXXXX", response.data);
         let signingUrl = response.data.signingUrlSetInfos[0].signingUrls[0].esignUrl;
