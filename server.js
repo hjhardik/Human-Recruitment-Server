@@ -365,11 +365,11 @@ app.post('/signauth/redirect', async (req,res) => {
   console.log(`${api_access_point}api/rest/v6/transientDocuments`);
   var data = new FormData();
   try {
-    data.append('File', fs.createReadStream(`/output/${contract}_${candidate}.pdf`));
+    data.append('File', fs.createReadStream(`./output/${contract}_${candidate}.pdf`));
   } catch (error) {
     res.json({
       success: false,
-      msg: "The created contract was deleted."
+      msg: "The created contract file was deleted due to free tier server usage."
     })
   }
   
@@ -386,7 +386,7 @@ app.post('/signauth/redirect', async (req,res) => {
 
   axios(config)
   .then(function (response) {
-    console.log("trabs response : ", response);
+    console.log("transient response : ", response);
     let transientDocumentId = response.data.transientDocumentId;
     console.log("td : ", transientDocumentId);
 
