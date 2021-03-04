@@ -410,14 +410,14 @@ app.post('/signauth/redirect', async (req,res) => {
         }
       );
       console.log("agreementId: ", agreementId);
-      var config = {
+      var cnfg = {
         method: 'get',
         url: `${api_access_point}api/rest/v6/agreements/${agreementId}/signingUrls`,
         headers: { 
           'Authorization': `Bearer ${access_token}`
         }
       };
-      axios(config)
+      axios(cnfg)
       .then(async function (response) {
         console.log("XXXXXXXXXXX", response.data);
         let signingUrl = response.data.signingUrlSetInfos[0].signingUrls[0].esignUrl;
