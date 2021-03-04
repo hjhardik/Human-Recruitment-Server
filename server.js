@@ -364,7 +364,15 @@ app.post('/signauth/redirect', async (req,res) => {
 
   console.log(`${api_access_point}api/rest/v6/transientDocuments`);
   var data = new FormData();
-  data.append('File', fs.createReadStream(`./output/${contract}_${candidate}.pdf`));
+  try {
+    data.append('File', fs.createReadStream(`/output/${contract}_${candidate}.pdf`));
+  } catch (error) {
+    res.json({
+      success: false,
+      msg: "The created contract was deleted."
+    })
+  }
+  
 
   var config = {
     method: 'post',
