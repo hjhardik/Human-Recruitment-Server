@@ -409,6 +409,7 @@ app.post('/signauth/redirect', async (req,res) => {
           }
         }
       );
+      console.log("agreementId: ", agreementId);
       var config = {
         method: 'get',
         url: `${api_access_point}api/rest/v6/agreements/${agreementId}/signingUrls`,
@@ -433,10 +434,10 @@ app.post('/signauth/redirect', async (req,res) => {
           }
         );
         res.json({
-          success:true,
+          success: true,
           msg:"Updated agreement id",
         });
-        
+
       }).catch(e => {
         console.log("error occured while creating signing url", e)
         res.json({
