@@ -318,7 +318,7 @@ app.post('/signauth/redirect', async (req,res) => {
   let {contract, candidate, email, code, state, api_access_point } = req.body; 
   let contractF = contract;
   let candidateF = candidate;
-
+  console.log("api_access_point :", api_access_point);
    //NOW SEND POST REQ TO TOKEN ENDPOINT
   if (code !== null && code !== undefined) {  
     let contract = state.split("__")[0];
@@ -333,7 +333,7 @@ app.post('/signauth/redirect', async (req,res) => {
   });
   var config = {
     method: 'post',
-    url: `${api_access_point}/oauth/token`,
+    url: "https://api.adobesign.com/oauth/token",
     headers: { 
       'Content-Type': 'application/x-www-form-urlencoded'
     },
