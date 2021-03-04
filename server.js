@@ -412,9 +412,9 @@ app.post('/signauth/redirect', async (req,res) => {
       var config = {
         method: 'get',
         url: `${api_access_point}api/rest/v6/agreements/${agreementId}/signingUrls`,
-        headers: {  
+        headers: { 
           'Authorization': `Bearer ${access_token}`
-        },
+        }
       };
       axios(config)
       .then(async function (response) {
@@ -432,6 +432,12 @@ app.post('/signauth/redirect', async (req,res) => {
             }
           }
         );
+      }).catch(e => {
+        console.log(e)
+        res.json({
+          success: false,
+          msg: "Error occured while creating signing url."
+        })
       })
       res.json({
         success:true,
