@@ -362,7 +362,6 @@ app.post('/signauth/redirect', async (req,res) => {
     })
   }
 
-  console.log(`${api_access_point}api/rest/v6/transientDocuments`);
   var data = new FormData();
   try {
     data.append('File', fs.createReadStream(`./output/${contract}_${candidate}.pdf`));
@@ -373,7 +372,6 @@ app.post('/signauth/redirect', async (req,res) => {
     })
   }
   
-
   var config = {
     method: 'post',
     url: `${api_access_point}api/rest/v6/transientDocuments`,
@@ -386,9 +384,7 @@ app.post('/signauth/redirect', async (req,res) => {
 
   axios(config)
   .then(function (response) {
-    console.log("transient response : ", response);
     let transientDocumentId = response.data.transientDocumentId;
-    console.log("td : ", transientDocumentId);
 
     var newData = JSON.stringify({"fileInfos":[{"transientDocumentId":`${transientDocumentId}`}],"name":`${contract}`,"participantSetsInfo":[{"memberInfos":[{"email":`${email}`}],"order":1,"role":"SIGNER"}],"signatureType":"ESIGN","state":"IN_PROCESS"});
 
@@ -404,11 +400,10 @@ app.post('/signauth/redirect', async (req,res) => {
 
     axios(newConfig)
     .then(async function (response) {
-      console.log("agreement response : ", response);
       let agreementId = response.data.id
       await CopyContract.findOneAndUpdate(
         { candidateName: candidate, contractName: contract },
-        { "$set": { "agreementId": agreementId,}},
+        { "$set": { "agreementId": agreementId, "status": 5}},
         (err) => {
           if (err) {
             res.json({
@@ -418,17 +413,40 @@ app.post('/signauth/redirect', async (req,res) => {
           }
         }
       );
+      var config = {
+        method: 'get',
+        url: `${api_access_point}api/rest/v6/agreements/${agreementId}/signingUrls`,
+        headers: {  
+          'Authorization': `Bearer ${access_token}`
+        },
+      };
+      axios(config)
+      .then(async function (response) {
+        console.log(response.data);
+        let signingUrl = response.data;
+        await CopyContract.findOneAndUpdate(
+          { candidateName: candidate, contractName: contract },
+          { "$set": { "signingUrl": signingUrl}},
+          (err) => {
+            if (err) {
+              res.json({
+                success: false,
+                msg:"Cannot update signing url.",
+              })
+            }
+          }
+        );
+      })
       res.json({
         success:true,
-        msg:"UPDATED AGREEMENT ID"
+        msg:"Updated agreement id",
       });
     })
   })
-  .catch(e=>{
-    console.log(e);
+  .catch(e => {
     res.json({
       success: false,
-      msg: "Cannot create agreement because API is not certified by Adobe. Place a request for certification and then it will work."
+      msg: "Cannot create agreement because API is not certified by Adobe."
     })
   })
   }else{

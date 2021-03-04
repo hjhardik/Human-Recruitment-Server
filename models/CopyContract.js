@@ -32,6 +32,10 @@ const copyContractSchema = new mongoose.Schema({
     type:String,
     default:null
   },
+  signingUrl:{
+    type:String,
+    default: null
+  },
   date: {
     type: Date,
     default: Date.now,
