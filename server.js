@@ -397,19 +397,6 @@ app.post('/signauth/redirect', async (req,res) => {
     axios(newConfig)
     .then(async function (response) {
       let agreementId = response.data.id
-      await CopyContract.findOneAndUpdate(
-        { candidateName: candidate, contractName: contract },
-        { "$set": { "agreementId": agreementId, "status": 5}},
-        (err) => {
-          if (err) {
-            res.json({
-              success: false,
-              msg:"Cannot update agreement Id.",
-            })
-          }
-        }
-      );
-      console.log("agreementId: ", agreementId);
       var cnfg = {
         method: 'get',
         url: `${api_access_point}api/rest/v6/agreements/${agreementId}/signingUrls`,
@@ -423,7 +410,7 @@ app.post('/signauth/redirect', async (req,res) => {
         let signingUrl = response.data.signingUrlSetInfos[0].signingUrls[0].esignUrl;
         await CopyContract.findOneAndUpdate(
           { candidateName: candidate, contractName: contract },
-          { "$set": { "signingUrl": signingUrl}},
+          { "$set": { "signingUrl": signingUrl,"agreementId": agreementId, "status": 5}},
           (err) => {
             if (err) {
               res.json({
