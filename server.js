@@ -418,8 +418,8 @@ app.post('/signauth/redirect', async (req,res) => {
       };
       axios(config)
       .then(async function (response) {
-        console.log(response.data);
-        let signingUrl = response.data;
+        console.log("XXXXXXXXXXX", response.data);
+        let signingUrl = response.data.signingUrlSetInfos[0].signingUrls[0].esignUrl;
         await CopyContract.findOneAndUpdate(
           { candidateName: candidate, contractName: contract },
           { "$set": { "signingUrl": signingUrl}},
@@ -432,21 +432,21 @@ app.post('/signauth/redirect', async (req,res) => {
             }
           }
         );
+        res.json({
+          success:true,
+          msg:"Updated agreement id",
+        });
+        
       }).catch(e => {
-        console.log(e)
+        console.log("error occured while creating signing url", e)
         res.json({
           success: false,
           msg: "Error occured while creating signing url."
         })
       })
-      res.json({
-        success:true,
-        msg:"Updated agreement id",
-      });
     })
   })
   .catch(e => {
-    console.log(e)
     res.json({
       success: false,
       msg: "Error occured while creating agreement. Please try again."
