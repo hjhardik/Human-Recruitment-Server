@@ -379,7 +379,7 @@ app.post('/signauth/redirect', async (req,res) => {
 
   axios(config)
   .then(function (response) {
-    consoel.log("trabs response : ", response);
+    console.log("trabs response : ", response);
     let transientDocumentId = response.data.transientDocumentId;
     console.log("td : ", transientDocumentId);
 
