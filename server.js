@@ -368,7 +368,7 @@ app.post('/signauth/redirect', async (req,res) => {
 
   var config = {
     method: 'post',
-    url: `${api_access_point}/api/rest/v6/transientDocuments`,
+    url: `${api_access_point}api/rest/v6/transientDocuments`,
     headers: { 
       'Authorization': `Bearer ${access_token}`, 
       ...data.getHeaders()
@@ -386,7 +386,7 @@ app.post('/signauth/redirect', async (req,res) => {
 
     var newConfig = {
       method: 'post',
-      url: `${api_access_point}/api/rest/v6/agreements`,
+      url: `${api_access_point}api/rest/v6/agreements`,
       headers: { 
         'Content-Type': 'application/json', 
         'Authorization': `Bearer ${access_token}`
