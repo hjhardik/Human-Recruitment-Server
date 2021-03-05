@@ -315,10 +315,12 @@ app.post('/signauth/redirect', async (req,res) => {
   let {contract, candidate, email, code, state, api_access_point } = req.body; 
   let contractF = contract;
   let candidateF = candidate;
+  let emailF = email;
    //NOW SEND POST REQ TO TOKEN ENDPOINT
   if (code !== null && code !== undefined) {  
     let contract = state.split("__")[0];
-    let candidate = state.split("__")[1]
+    let candidate = state.split("__")[1];
+    let email = state.split("__")[2];
  
   var data = qs.stringify({
     'code': code,
@@ -398,16 +400,14 @@ app.post('/signauth/redirect', async (req,res) => {
       let agreementId = response.data.id
       var cnfg = {
         method: 'get',
-        //url: `${api_access_point}api/rest/v6/agreements/${agreementId}/signingUrls`,
-        url: 'https://api.in1.adobesign.com/api/rest/v6/agreements/CBJCHBCAABAAN2e0K-s5ECjksk2FfqLJQLe3Vgua8_iW/signingUrls',
+        url: `${api_access_point}api/rest/v6/agreements/${agreementId}/signingUrls`,
         headers: { 
           'Authorization': `Bearer ${access_token}`
         }
       };
-      console.log("error occurs from below")
+
       await axios(cnfg)
       .then(async function (response) {
-        console.log("XXXXXXXXXXX", response.data);
         let signingUrl = response.data.signingUrlSetInfos[0].signingUrls[0].esignUrl;
         await CopyContract.findOneAndUpdate(
           { candidateName: candidate, contractName: contract },
@@ -427,10 +427,9 @@ app.post('/signauth/redirect', async (req,res) => {
         });
 
       }).catch(e => {
-        console.log("error occured while creating signing url", e)
         res.json({
           success: false,
-          msg: "Error occured while creating signing url."
+          msg: "Error occured while creating signing url. Please try again."
         })
       })
     })
@@ -442,7 +441,7 @@ app.post('/signauth/redirect', async (req,res) => {
     })
   })
   }else{
-    let url = `https://secure.na1.adobesign.com/public/oauth?redirect_uri=${redirectUrl}&response_type=code&client_id=${clientID}&scope=user_login:self+agreement_read:self+agreement_write:self+agreement_send:self&state=${contractF}__${candidateF}`;
+    let url = `https://secure.na1.adobesign.com/public/oauth?redirect_uri=${redirectUrl}&response_type=code&client_id=${clientID}&scope=user_login:self+agreement_read:self+agreement_write:self+agreement_send:self&state=${contractF}__${candidateF}__${emailF}`;
     res.json({
       success: true,
       data: url,
