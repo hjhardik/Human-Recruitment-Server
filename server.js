@@ -429,7 +429,7 @@ app.post('/signauth/redirect', async (req,res) => {
         });
 
       }).catch(e => {
-        await axios(cnfg)
+      axios(cnfg)
       .then(async function (response) {
         let signingUrl = response.data.signingUrlSetInfos[0].signingUrls[0].esignUrl;
         await CopyContract.findOneAndUpdate(
