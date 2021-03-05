@@ -289,8 +289,6 @@ app.post('/modifystatus', async(req,res) => {
         msg:e
       })
     })
-  }else if(status===6){
-
   }else{
     let success = await CopyContract.findOneAndUpdate(
       { candidateName: candidate, creator, contractName: contract },
@@ -450,34 +448,12 @@ app.post('/signauth/redirect', async (req,res) => {
         });
 
       }).catch(e =>{
-        axios(cnfg)
-      .then(async function (response) {
-        let signingUrl = response.data.signingUrlSetInfos[0].signingUrls[0].esignUrl;
-        await CopyContract.findOneAndUpdate(
-          { candidateName: candidate, contractName: contract },
-          { "$set": { "signingUrl": signingUrl,"agreementId": agreementId, "status": 5}},
-          (err) => {
-            if (err) {
-              res.json({
-                success: false,
-                msg:"Cannot update signing url.",
-              })
-            }
-          }
-        );
-        res.json({
-          success: true,
-          msg:"Updated agreement id",
-        });
-
-      }).catch(e=>{
         console.log(e)
         res.json({
           success: false,
           msg: "Error occured while creating signing url."
         })
       })
-    })
   })
 })
 })
