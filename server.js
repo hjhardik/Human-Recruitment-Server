@@ -289,6 +289,8 @@ app.post('/modifystatus', async(req,res) => {
         msg:e
       })
     })
+  }else if(status===6){
+
   }else{
     let success = await CopyContract.findOneAndUpdate(
       { candidateName: candidate, creator, contractName: contract },
@@ -427,6 +429,7 @@ app.post('/signauth/redirect', async (req,res) => {
         });
 
       }).catch(e => {
+        console.log(e)
         res.json({
           success: false,
           msg: "Error occured while creating signing url. Please try again."
